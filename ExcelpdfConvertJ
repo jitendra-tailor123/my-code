@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html ng-app="MyApp" ng-controller="MyController" >
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <title>Export to pdf and excel</title>
+
+
+<style>
+input{
+size:5px;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 50%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+.container {
+            display: grid;
+            grid-auto-rows: 60px;
+            grid-gap: 10px;
+            background-color: red;
+            padding: 10px;
+         }
+         .container>div {
+            background-color: yellow;
+            text-align: center;
+            padding:10px 0;
+            font-size: 20px;
+         }
+		 html, body {
+    min-height: 100%;
+}
+body { background-color: dodgerblue; }
+</style>
+ 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"></script>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="C:\Users\Ncs\Desktop\New folder (4)\tod.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    
+
+ <script>
+
+var tableToExcel = (function() {
+  var uri = 'data:application/vnd.ms-excel;base64,'
+    , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+  return function(table, name) {
+    if (!table.nodeType) table = document.getElementById(table)
+    var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+    window.location.href = uri + base64(format(template, ctx))
+  }
+})()
+  </script>
+ <script>
+
+var app = angular.module('MyApp', [])
+        app.controller('MyController', function ($scope) {
+
+             
+            $scope.emplist = [];
+        
+            $scope.AddData=function()
+            {
+   
+            var emp=
+            {
+               
+               Id:$scope.emplist.length + 1,
+                
+               name:$scope.name,
+               hindi:$scope.maths,
+
+               maths:$scope.hindi,
+               english:$scope.english,
+                      jt1:$scope.jt1,
+					   jt2:$scope.jt2,
+					    jt3:$scope.jt3, 
+						jt4:$scope.jt4,
+						 jt5:$scope.jt5,
+						  jt6:$scope.jt6,
+
+            };
+            
+            $scope.emplist.push(emp);
+            clearmodel();
+        };
+          		$scope.DeletData = function(emp)
+              {
+                var index = $scope.emplist.indexOf(emp);
+                    $scope.emplist.splice(index,1);
+
+
+
+              }; 
+        $scope.BindSelectedData=function(emp)
+        {
+            $scope.Id=emp.Id;
+            $scope.name=emp.name;
+            $scope.maths=emp.maths;
+            $scope.hindi=emp.hindi;
+            $scope.english=emp.english;
+            $scope.jt1=emp.jt1;
+			 $scope.jt2=emp.jt2;
+			  $scope.jt3=emp.jt3;
+			  $scope.jt4=emp.jt4;
+			   $scope.jt5=emp.jt5;
+			    $scope.jt6=emp.jt6;
+				 
+ 
+ 
+
+
+       
+
+
+        };
+        clearmodel= function(emp)
+        {
+            $scope.Id=0;
+            $scope.name='';
+           $scope.hindi='';
+            $scope.maths='';
+            $scope.english='';
+            $scope.jt1='';
+			$scope.jt2='';
+			$scope.jt3='';
+			$scope.jt4='';
+			$scope.jt5='';
+			$scope.jt6='';
+        }
+
+        /*added function for pdf*/
+   $scope.Export = function () {
+                html2canvas(document.getElementById('testTable'), {
+                    onrendered: function (canvas) {
+                        var data = canvas.toDataURL();
+                        var docDefinition = {
+                            content: [{
+                                image: data,
+                                width: 500
+                            }]
+                        };
+                        pdfMake.createPdf(docDefinition).download("Table.pdf");
+                    }
+                });
+            }
+       
+
+        });
+</script>
+
+</head>
+<body>
+
+<h1>tableToExcel Demo</h1>
+<p>Exporting the W3C Example Table</p>
+
+
+<br><div>
+  : <input value="Add Data" type="Button" ng-click="AddData()" class="btn btn-success">
+  <input type="button" onclick="tableToExcel('testTable', 'W3C Example Table')" value="Export to Excel" class="btn btn-info">
+  <input type="button" value="Expor to PDF" ng-click="Export()"  class="btn btn-warning"/>
+  
+  <table id="testTable" class="table table-bordered"  class="container" >
+  
+  </div><br>
+<br/>
+<div class="text-warning" >
+<tr>
+<td>S.N{{Id}}</td>
+<td>field1: <input type="text" ng-model="name"></td>
+
+<td>field2:<input type="text" ng-model="hindi"></td>
+<td>field3: <input type="text" ng-model="maths"></td>
+<td>field4: <input type="text" ng-model="english"></td>
+<td>field5: <input type="text" ng-model="jt1"></td>
+<td>field6: <input type="text" ng-model="jt2"></td>
+<td>field7: <input type="text" ng-model="jt3"></td>
+<td>field8: <input type="text" ng-model="jt4"></td>
+<td>field9: <input type="text" ng-model="jt5"></td>
+<td>field10: <input type="text" ng-model="jt6"></td>
+ <td>Delet</td>
+</tr></div>
+<tbody >
+
+  <tr ng-click="BindSelectedData(Emp)" ng-repeat="emp in emplist">
+    <td >{{emp.Id}}   </td>
+    <td >{{emp.name}}</td>
+	<td>{{emp.hindi}}</td>
+    <td>{{emp.maths}}</td>
+    
+    <td>{{emp.english}}</td>
+    <td>{{emp.jt1}}</td>
+	<td>{{emp.jt2}}</td>
+	<td>{{emp.jt3}}</td>
+	<td>{{emp.jt4}}</td>
+	<td>{{emp.jt5}}</td>
+	<td>{{emp.jt6}}</td>
+<td><input value="Delet" type="Button" ng-click="DeletData()" class="btn btn-danger"></td>
+  </tr>
+
+</tbody></table>
+
+</div>
+
+
+
+
+
+</body>
+</html>
