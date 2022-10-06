@@ -1,0 +1,7 @@
+
+//initialize zero array refrence
+if (grpids == null)
+                {
+                    int[] values = new int[] { 0 };
+                    grpids = values;
+                }
